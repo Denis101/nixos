@@ -22,7 +22,7 @@
 
       overlays = [];
     in rec {
-      schemas = flake-schemas.schemas;
+      schemas = inputs.flake-schemas.schemas;
       lib = import ./lib.nix inputs;
 
       nixosConfigurations = builtins.mapAttrs (
