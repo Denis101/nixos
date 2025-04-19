@@ -36,6 +36,8 @@ lib // rec {
     }
   );
 
+  colorscheme = defaultFilesAttrset ./colorscheme;
+
   buildNixos = { system, module, specialArgs }: inputs.nixpkgs.lib.nixosSystem {
     inherit specialArgs;
     pkgs = pkgsBySystem.${system};
