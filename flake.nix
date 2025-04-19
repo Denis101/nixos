@@ -31,7 +31,7 @@
           name: module:
           lib.buildNixos {
             inherit system module;
-            specialArgs = { inherit hostnames; };
+            specialArgs = { inherit globals; };
           }
         ) platforms
       ) lib.linuxPlatforms;
@@ -42,7 +42,7 @@
           name: module:
           lib.buildDarwin {
             inherit system module;
-            specialArgs = { inherit hostnames; };
+            specialArgs = { inherit globals; };
           }
         ) platforms
       ) lib.linuxPlatforms;
@@ -53,7 +53,7 @@
           name: module:
           lib.buildHome {
             inherit system module;
-            specialArgs = { inherit hostnames; };
+            specialArgs = { inherit globals; };
           }
         ) platforms
       ) lib.linuxPlatforms;
