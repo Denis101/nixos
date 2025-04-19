@@ -69,7 +69,7 @@ lib // rec {
           } // specialArgs;
         } // homeModule.home-manager;
       }
-    ]
+    ];
   };
 
   buildHome = { system, module, specialArgs }: inputs.home-manager.lib.homeManagerConfiguration {
@@ -80,5 +80,5 @@ lib // rec {
     extraSpecialArgs = {
       inherit colorscheme;
     } // specialArgs;
-  }
+  };
 }
