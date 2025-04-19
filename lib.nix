@@ -31,7 +31,7 @@ lib // rec {
   pkgsBySystem = flakeUtils.eachDefaultSystem (
     system:
     import inputs.nixpkgs {
-      inherit system overlays;
+      inherit system;
       config.allowUnfree = true;
     }
   );
