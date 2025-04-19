@@ -38,6 +38,13 @@ lib // rec {
 
   colorscheme = defaultFilesAttrset ./colorscheme;
 
+  homeModule = {
+    home-manager = {
+      useGlobalPkgs = lib.mkDefault true;
+      useUserPackages = lib.mkDefault true;
+    };
+  };
+
   buildNixos = { system, module, specialArgs }: inputs.nixpkgs.lib.nixosSystem {
     inherit specialArgs;
     pkgs = pkgsBySystem.${system};
