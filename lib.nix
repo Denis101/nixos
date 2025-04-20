@@ -6,10 +6,10 @@ let
 in
 lib // rec {
   supportedSystems = builtins.filter (system: builtins.pathExists ./platform/${system}) flakeUtils.defaultSystems;
-
   linuxSystems = builtins.filter (lib.hasSuffix "linux") supportedSystems;
   darwinSystems = builtins.filter (lib.hasSuffix "darwin") supportedSystems;
 
+  eachSupportedSystem = flakeUtils.eachSystem supportedSystems;
   eachLinuxSystem = flakeUtils.eachSystem linuxSystems;
   eachDarwinSystem = flakeUtils.eachSystem darwinSystems;
 
@@ -29,10 +29,11 @@ lib // rec {
       (builtins.listToAttrs)
     ];
 
-  linuxPlatforms = eachLinuxSystem (system: defaultFilesAttrset ./platform/${system});
-  darwinPlatforms = eachDarwinSystem (system: defaultFilesAttrset ./platform/${system});
+  supportedPlatformSystems = eachSupportedSystem (system: defaultFilesAttrset ./platform/${system});
+  linuxPlatformSystems = eachLinuxSystem (system: defaultFilesAttrset ./platform/${system});
+  darwinPlatformSystems = eachDarwinSystem (system: defaultFilesAttrset ./platform/${system});
 
-  pkgsBySystem = flakeUtils.eachDefaultSystem (
+  pkgsBySystem = eachSupportedSystem (
     system:
     import inputs.nixpkgs {
       inherit system;

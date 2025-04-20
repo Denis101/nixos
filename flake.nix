@@ -45,7 +45,7 @@
             specialArgs = { inherit globals; };
           }
         ) platforms
-      ) lib.linuxPlatforms;
+      ) lib.linuxPlatformSystems;
 
       darwinConfigurations = builtins.mapAttrs (
         system: platforms:
@@ -56,7 +56,14 @@
             specialArgs = { inherit globals; };
           }
         ) platforms
-      ) lib.linuxPlatforms;
+      ) lib.darwinPlatformSystems;
+
+      homeModules = builtins.mapAttrs (
+        system: platforms:
+        builtins.mapAttrs (
+          name: module: (builtins.head (lib.attrsToList module.home-manager.users)).value
+        ) platforms
+      ) lib.supportedPlatformSystems;
 
       homeConfigurations = builtins.mapAttrs (
         system: platforms:
@@ -67,7 +74,7 @@
             specialArgs = { inherit globals; };
           }
         ) platforms
-      ) lib.linuxPlatforms;
+      ) homeModules;
 
       devShells = inputs.flake-utils.lib.eachDefaultSystem (
         system:
