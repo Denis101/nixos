@@ -2,15 +2,9 @@
   description = "Global development environment";
 
   inputs = {
+    flake-schemas.url = "https://flakehub.com/f/DeterminateSystems/flake-schemas/*";
+    flake-utils.url = "https://flakehub.com/f/numtide/flake-utils/0.1.*";
     nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.2411.*";
-    flake-schemas = {
-      url = "https://flakehub.com/f/DeterminateSystems/flake-schemas/*";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    flake-utils = {
-      url = "https://flakehub.com/f/numtide/flake-utils/0.1.*";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     wsl = {
       url = "github:nix-community/NixOS-WSL";
       inputs.nixpkgs.follows = "nixpkgs";
