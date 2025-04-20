@@ -6,10 +6,10 @@ rec {
     modules = {
       system.wsl.enable = true;
       system.helix.enable = true;
+      system.home-manager.enable = true;
       system.starship.enable = true;
       system.tmux.enable = true;
       home.git.enable = true;
-      # home-manager.enable = true;
     };
   };
 
