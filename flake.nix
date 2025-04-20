@@ -76,7 +76,16 @@
         ) platforms
       ) homeModules;
 
-      devShells = inputs.flake-utils.lib.eachDefaultSystem (
+      packages = lib.eachSupportedSystem (
+        system:
+        {
+          nixosConfigurations = nixosConfigurations.${system};
+          darwinConfigurations = darwinConfigurations.${system};
+          homeConfigurations = homeConfigurations.${system};
+        }
+      );
+
+      devShells = lib.eachSupportedSystem (
         system:
           let pkgs = import nixpkgs { inherit system overlays; };
           in {
@@ -91,7 +100,7 @@
           }
       );
 
-      formatter = inputs.flake-utils.lib.eachDefaultSystem (
+      formatter = lib.eachSupportedSystem (
         system:
         let
           pkgs = import nixpkgs {
