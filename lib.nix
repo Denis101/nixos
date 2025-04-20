@@ -6,15 +6,6 @@ let
 in
 lib // rec {
   supportedSystems = builtins.filter (system: builtins.pathExists ./platform/${system}) flakeUtils.defaultSystems;
-  linuxSystems = builtins.filter (lib.hasSuffix "linux") defaultSystems;
-  darwinSystems = builtins.filter (lib.hasSuffix "darwin") defaultSystems;
-
-  eachSupportedSystem = flakeUtils.eachSystem defaultSystems;
-  eachLinuxSystem = flakeUtils.eachSystem linuxSystems;
-  eachDarwinSystem = flakeUtils.eachSystem darwinSystems;
-
-  defaultSystemAttrs = lib.genAttrs flakeUtils.defaultSystems;
-  supportedSystemAttrs = lib.genAttrs supportedSystems;
 
   defaultFilesInDir =
     directory:
@@ -32,11 +23,18 @@ lib // rec {
       (builtins.listToAttrs)
     ];
 
-  supportedPlatformSystems = eachSupportedSystem (system: defaultFilesAttrset ./platform/${system});
-  linuxPlatformSystems = eachLinuxSystem (system: defaultFilesAttrset ./platform/${system});
-  darwinPlatformSystems = eachDarwinSystem (system: defaultFilesAttrset ./platform/${system});
+  flattenAttrset = attrs: builtins.foldl' lib.mergeAttrs { } (builtins.attrValues attrs);
 
-  pkgsBySystem = eachSupportedSystem (
+  linuxSystems = builtins.filter (lib.hasSuffix "linux") supportedSystems;
+  darwinSystems = builtins.filter (lib.hasSuffix "darwin") supportedSystems;
+
+  forAllSystems = lib.genAttrs supportedSystems;
+
+  platforms = forAllSystems (system: defaultFilesAttrset ./platform/${system});
+  linuxPlatforms = lib.filterAttrs (name: value: builtins.elem name linuxSystems) platforms;
+  darwinPlatforms = lib.filterAttrs (name: value: builtins.elem name darwinSystems) platforms;
+
+  pkgsBySystem = forAllSystems (
     system:
     import inputs.nixpkgs {
       inherit system;
@@ -59,7 +57,7 @@ lib // rec {
     modules = [
       inputs.home-manager.nixosModules.home-manager
       inputs.wsl.nixosModules.wsl
-      { imports = ./modules/profile; }
+      { imports = [./modules/profile]; }
       { imports = (defaultFilesInDir ./modules/system); }
       module
       {
@@ -94,7 +92,7 @@ lib // rec {
   buildHome = { system, module, specialArgs }: inputs.home-manager.lib.homeManagerConfiguration {
     pkgs = pkgsBySystem.${system};
     modules = [
-      { imports = ./modules/profile; }
+      { imports = [./modules/profile]; }
       { imports = (defaultFilesInDir ./modules/home); }
       module
     ];

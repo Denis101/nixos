@@ -18,93 +18,89 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
-      url = "github:nix-community/home-manager/master";
-      inputs.nixpkgs.follows = "nixpkgs";
+      type = "github";
+      owner = "nix-community";
+      repo = "home-manager";
+      ref = "release-24.11";
     };
   };
-  outputs = { nixpkgs, ... }@inputs:
-    let
-      globals = rec {
-        user = "denis";
-        fullName = "Denis Craig";
-        gitName = fullName;
-        gitEmail = "admin@deniscraig.com";
-      };
+  outputs = { self, nixpkgs, ... }@inputs: rec {
+    inherit (self) outputs;
+    schemas = inputs.flake-schemas.schemas;
+    lib = import ./lib.nix inputs;
 
-      overlays = [];
-    in rec {
-      schemas = inputs.flake-schemas.schemas;
-      lib = import ./lib.nix inputs;
-
-      nixosConfigurations = builtins.mapAttrs (
+    nixosConfigurations = lib.flattenAttrset (
+      builtins.mapAttrs (
         system: platforms:
         builtins.mapAttrs (
           name: module:
           lib.buildNixos {
             inherit system module;
-            specialArgs = { inherit globals; };
+            specialArgs = { inherit inputs outputs; };
           }
         ) platforms
-      ) lib.linuxPlatformSystems;
+      ) lib.linuxPlatforms
+    );
 
-      darwinConfigurations = builtins.mapAttrs (
+    darwinConfigurations = lib.flattenAttrset (
+      builtins.mapAttrs (
         system: platforms:
         builtins.mapAttrs (
           name: module:
           lib.buildDarwin {
             inherit system module;
-            specialArgs = { inherit globals; };
+            specialArgs = { inherit inputs outputs; };
           }
         ) platforms
-      ) lib.darwinPlatformSystems;
+      ) lib.darwinPlatforms
+    );
 
-      homeModules = builtins.mapAttrs (
-        system: platforms:
-        builtins.mapAttrs (
-          name: module: (builtins.head (lib.attrsToList module.home-manager.users)).value
-        ) platforms
-      ) lib.supportedPlatformSystems;
+    homeModules = builtins.mapAttrs (
+      system: platforms:
+      builtins.mapAttrs (
+        name: module: (builtins.head (lib.attrsToList module.home-manager.users)).value
+      ) platforms
+    ) lib.platforms;
 
-      homeConfigurations = builtins.mapAttrs (
-        system: platforms:
-        builtins.mapAttrs (
-          name: module:
-          lib.buildHome {
-            inherit system module;
-            specialArgs = { inherit globals; };
-          }
-        ) platforms
-      ) homeModules;
-
-      packages = lib.defaultSystemAttrs (
-        system:
-        {
-          nixosConfigurations = nixosConfigurations.${system};
-          darwinConfigurations = darwinConfigurations.${system};
-          homeConfigurations = homeConfigurations.${system};
+    homeConfigurations = builtins.mapAttrs (
+      system: platforms:
+      builtins.mapAttrs (
+        name: module:
+        lib.buildHome {
+          inherit system module;
+          specialArgs = { inherit inputs outputs; };
         }
-      );
+      ) platforms
+    ) homeModules;
 
-      devShells = lib.defaultSystemAttrs (
-        system:
-          let pkgs = import nixpkgs { inherit system overlays; };
-          in {
-            default = pkgs.mkShell {
-              buildInputs = with pkgs; [
-                git
-                nixfmt
-                shfmt
-                shellcheck
-              ];
-            };
-          }
-      );
+    packages = lib.forAllSystems (
+      system:
+      {
+        inherit nixosConfigurations darwinConfigurations;
+        homeConfigurations = homeConfigurations.${system};
+      }
+    );
 
-      formatter = lib.defaultSystemAttrs (
-        system:
-        let pkgs = import nixpkgs { inherit system overlays; };
-        in
-        pkgs.nixfmt-rfc-style
-      );
-    };
+    devShells = lib.forAllSystems (
+      system:
+        let pkgs = import nixpkgs { inherit system; };
+        in {
+          default = pkgs.mkShell {
+            buildInputs = with pkgs; [
+              git
+              nixfmt
+              shfmt
+              shellcheck
+            ];
+          };
+        }
+    );
+
+    formatter = lib.forAllSystems (
+      system:
+      let pkgs = import nixpkgs { inherit system; };
+      in
+      pkgs.nixfmt-rfc-style
+    );
+  };
 }

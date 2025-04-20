@@ -1,16 +1,17 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 let
-  inherit (config.profile.username) username;
   cfg = config.profile;
 in {
   config = {
     # Allows declarative password setting
     # users.mutableUsers = lib.mkDefault false;
 
-    users.users.${username} = {
+    users.users.${cfg.username} = {
       shell = pkgs.bash;
       isNormalUser = lib.mkDefault true;
     };
+
+    wsl.enable = lib.mkDefault false;
   };
 }

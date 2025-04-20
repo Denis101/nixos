@@ -16,15 +16,6 @@
     };
 
     modules = {
-      system = {
-        wsl = {
-          enable = lib.mkOption {
-            type = lib.types.bool;
-            descriptoin = "Is windows subsystem for linux enabled?";
-          };
-        };
-      };
-
       home = {
         git = {
           enable = lib.mkOption {
@@ -40,7 +31,7 @@
 
           allowedSigners = lib.mkOption {
             type = lib.types.str;
-            description = "git/allowed-signers text contents"
+            description = "git/allowed-signers text contents";
           };
         };
       };
@@ -75,17 +66,19 @@
     };
   };
 
-  nix = let
-    flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
-  in {
-    settings = {
-      experimental-features = "nix-command flakes";
-      nix-path = config.nix.nixPath;
+  config = {
+    nix = let
+      flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
+    in {
+      settings = {
+        experimental-features = "nix-command flakes";
+        nix-path = config.nix.nixPath;
+      };
+
+      nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
     };
 
-    nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
+    networking.hostName = "nixos";
+    system.stateVersion = "24.11";
   };
-
-  networking.hostName = "nixos";
-  system.stateVersion = "24.11";
 }
