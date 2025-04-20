@@ -13,6 +13,8 @@ lib // rec {
   eachLinuxSystem = flakeUtils.eachSystem linuxSystems;
   eachDarwinSystem = flakeUtils.eachSystem darwinSystems;
 
+  supportedSystemAttrs = lib.genAttrs supportedSystems;
+
   defaultFilesInDir =
     directory:
     lib.pipe (lib.filesystem.listFilesRecursive directory) [

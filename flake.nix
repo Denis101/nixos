@@ -76,7 +76,7 @@
         ) platforms
       ) homeModules;
 
-      packages = lib.eachSupportedSystem (
+      packages = lib.supportedSystemAttrs (
         system:
         {
           nixosConfigurations = nixosConfigurations.${system};
@@ -85,7 +85,7 @@
         }
       );
 
-      devShells = lib.eachSupportedSystem (
+      devShells = lib.supportedSystemAttrs (
         system:
           let pkgs = import nixpkgs { inherit system overlays; };
           in {
@@ -100,7 +100,7 @@
           }
       );
 
-      formatter = lib.eachSupportedSystem (
+      formatter = lib.supportedSystemAttrs (
         system:
         let
           pkgs = import nixpkgs {
