@@ -4,11 +4,12 @@ rec {
     fullName = "Denis Craig";
     email = "admin@deniscraig.com";
     modules = {
-      helix.enable = true;
-      home-manager.enable = true;
-      starship.enable = true;
-      tmux.enable = true;
-      wsl.enable = true;
+      system.wsl.enable = true;
+      system.helix.enable = true;
+      system.starship.enable = true;
+      system.tmux.enable = true;
+      home.git.enable = true;
+      # home-manager.enable = true;
     };
   };
 

@@ -1,15 +1,13 @@
 { lib, pkgs, config, ... }:
 with lib;
 let
-  cfg = config.modules.helix;
+  cfg = config.profile.modules.system.helix;
 in {
-  options.modules.helix = {
+  options.profile.modules.system.helix = {
     enable = mkEnableOption "Helix module";
   };
 
-  config = let
-    stateVersion = "24.11";
-  in mkIf cfg.enable {
+  config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
       pkgs.helix
     ];

@@ -56,6 +56,8 @@ lib // rec {
     modules = [
       inputs.home-manager.nixosModules.home-manager
       inputs.wsl.nixosModules.wsl
+      { imports = ./modules/profile; }
+      { imports = (defaultFilesInDir ./modules/system); }
       module
       {
         home-manager = {
@@ -89,6 +91,8 @@ lib // rec {
   buildHome = { system, module, specialArgs }: inputs.home-manager.lib.homeManagerConfiguration {
     pkgs = pkgsBySystem.${system};
     modules = [
+      { imports = ./modules/profile; }
+      { imports = (defaultFilesInDir ./modules/home); }
       module
     ];
     extraSpecialArgs = {
