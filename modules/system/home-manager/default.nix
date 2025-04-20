@@ -1,6 +1,9 @@
-{ config, lib, pkgs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   cfg = config.profile;
 in {
   options.profile.modules.system.home-manager.enable = lib.mkEnableOption "home manager";

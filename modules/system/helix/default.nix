@@ -1,6 +1,10 @@
-{ lib, pkgs, config, ... }:
-with lib;
-let
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
+with lib; let
   cfg = config.profile.modules.system.helix;
 in {
   options.profile.modules.system.helix = {

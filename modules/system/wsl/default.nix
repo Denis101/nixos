@@ -1,6 +1,8 @@
-{ config, lib, ... }:
-
-let
+{
+  config,
+  lib,
+  ...
+}: let
   cfg = config.profile;
 in {
   options.profile.modules.system.wsl.enable = lib.mkEnableOption "WSL settings";

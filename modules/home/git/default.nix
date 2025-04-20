@@ -1,6 +1,9 @@
-{ config, pkgs, lib, ... }:
-
-let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
   cfg = config.profile.modules.home.git;
 in {
   options.profile.modules.home.git = {
@@ -63,7 +66,7 @@ in {
         ];
       };
 
-      xdg.configFile."git/allowed-signers".text = cfg.allowedSigners;
+      # xdg.configFile."git/allowed-signers".text = cfg.allowedSigners;
     };
   };
 }

@@ -1,4 +1,4 @@
-{ inputs, lib, config, pkgs, ... }: {
+{lib, ...}: {
   options.profile = {
     username = lib.mkOption {
       type = lib.types.str;
@@ -17,6 +17,13 @@
 
     modules = {
       home = {
+        home-manager = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            description = "Is home-manager enabled?";
+          };
+        };
+
         git = {
           enable = lib.mkOption {
             type = lib.types.bool;
@@ -64,21 +71,5 @@
         };
       };
     };
-  };
-
-  config = {
-    nix = let
-      flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
-    in {
-      settings = {
-        experimental-features = "nix-command flakes";
-        nix-path = config.nix.nixPath;
-      };
-
-      nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
-    };
-
-    networking.hostName = "nixos";
-    system.stateVersion = "24.11";
   };
 }

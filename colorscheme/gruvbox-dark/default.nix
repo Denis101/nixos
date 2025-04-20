@@ -1,5 +1,4 @@
 # Gruvbox with a darker background for greater contrast
-
 {
   name = "gruvbox-dark"; # Dark, Medium
   author = "Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox), ElRastaOk (https://www.reddit.com/user/ElRastaOk)";

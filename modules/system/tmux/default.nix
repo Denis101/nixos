@@ -1,6 +1,10 @@
-{ lib, pkgs, config, ... }:
-with lib;
-let
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
+with lib; let
   cfg = config.profile.modules.system.tmux;
 in {
   options.profile.modules.system.tmux = {
@@ -9,9 +13,10 @@ in {
 
   config = let
     stateVersion = "24.11";
-  in mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
-      pkgs.tmux
-    ];
-  };
+  in
+    mkIf cfg.enable {
+      environment.systemPackages = with pkgs; [
+        pkgs.tmux
+      ];
+    };
 }
