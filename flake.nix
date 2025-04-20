@@ -103,6 +103,7 @@
       formatter = lib.supportedSystemAttrs (
         system:
         let pkgs = import nixpkgs { inherit system overlays; };
+        in
         pkgs.nixfmt-rfc-style
       );
     };
