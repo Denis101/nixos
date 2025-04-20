@@ -8,6 +8,9 @@ lib // rec {
   linuxSystems = builtins.filter (lib.hasSuffix "linux") flakeUtils.defaultSystems;
   darwinSystems = builtins.filter (lib.hasSuffix "darwin") flakeUtils.defaultSystems;
 
+  eachLinuxSystem = flakeUtils.eachSystem linuxSystems;
+  eachDarwinSystem = flakeUtils.eachSystem darwinSystems;
+
   defaultFilesInDir =
     directory:
     lib.pipe (lib.filesystem.listFilesRecursive directory) [
@@ -24,9 +27,8 @@ lib // rec {
       (builtins.listToAttrs)
     ];
 
-  platforms = flakeUtils.eachDefaultSystem (system: defaultFilesAttrset ./platform/${system});
-  linuxPlatforms = lib.filterAttrs (name: value: builtins.elem name linuxSystems) platforms;
-  darwinPlatforms = lib.filterAttrs (name: value: builtins.elem name darwinSystems) platforms;
+  linuxPlatforms = eachLinuxSystem (system: defaultFilesAttrset ./platform/${system});
+  darwinPlatforms = eachDarwinSystem (system: defaultFilesAttrset ./platform/${system});
 
   pkgsBySystem = flakeUtils.eachDefaultSystem (
     system:
