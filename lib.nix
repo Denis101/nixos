@@ -13,6 +13,7 @@ lib // rec {
   eachLinuxSystem = flakeUtils.eachSystem linuxSystems;
   eachDarwinSystem = flakeUtils.eachSystem darwinSystems;
 
+  defaultSystemAttrs = lib.genAttrs flakeUtils.defaultSystems;
   supportedSystemAttrs = lib.genAttrs supportedSystems;
 
   defaultFilesInDir =

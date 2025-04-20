@@ -76,14 +76,14 @@
         ) platforms
       ) homeModules;
 
-      # packages = lib.supportedSystemAttrs (
-      #   system:
-      #   {
-      #     nixosConfigurations = nixosConfigurations.${system};
-      #     darwinConfigurations = darwinConfigurations.${system};
-      #     homeConfigurations = homeConfigurations.${system};
-      #   }
-      # );
+      packages = lib.defaultSystemAttrs (
+        system:
+        {
+          nixosConfigurations = nixosConfigurations.${system};
+          darwinConfigurations = darwinConfigurations.${system};
+          homeConfigurations = homeConfigurations.${system};
+        }
+      );
 
       devShells = lib.supportedSystemAttrs (
         system:
