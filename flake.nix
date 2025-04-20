@@ -85,7 +85,7 @@
         }
       );
 
-      devShells = lib.supportedSystemAttrs (
+      devShells = lib.defaultSystemAttrs (
         system:
           let pkgs = import nixpkgs { inherit system overlays; };
           in {
@@ -100,7 +100,7 @@
           }
       );
 
-      formatter = lib.supportedSystemAttrs (
+      formatter = lib.defaultSystemAttrs (
         system:
         let pkgs = import nixpkgs { inherit system overlays; };
         in
