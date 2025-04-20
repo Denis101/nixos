@@ -6,10 +6,10 @@ let
 in
 lib // rec {
   supportedSystems = builtins.filter (system: builtins.pathExists ./platform/${system}) flakeUtils.defaultSystems;
-  linuxSystems = builtins.filter (lib.hasSuffix "linux") supportedSystems;
-  darwinSystems = builtins.filter (lib.hasSuffix "darwin") supportedSystems;
+  linuxSystems = builtins.filter (lib.hasSuffix "linux") defaultSystems;
+  darwinSystems = builtins.filter (lib.hasSuffix "darwin") defaultSystems;
 
-  eachSupportedSystem = flakeUtils.eachSystem supportedSystems;
+  eachSupportedSystem = flakeUtils.eachSystem defaultSystems;
   eachLinuxSystem = flakeUtils.eachSystem linuxSystems;
   eachDarwinSystem = flakeUtils.eachSystem darwinSystems;
 
