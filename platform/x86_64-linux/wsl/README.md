@@ -12,7 +12,7 @@ wsl -d NixOS
 sudo nix-channel --update
 sudo nixos-rebuild switch
 ```
-4. Build this flake with the experimental features for `nix-command` and `flakes` enabled:
+4. Rebuild with this flake:
 ```
-nix --extra-experimental-features nix-command --extra-experimental-features flakes build
+nixos-rebuild switch --flake github:Denis101/nixos
 ```
