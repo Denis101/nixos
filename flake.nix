@@ -33,18 +33,33 @@
       type = "github";
       owner = "Denis101";
       repo = "flake-nix-utils";
-      ref = "0.0.1";
+      ref = "0.0.2";
       inputs.flake-schemas.follows = "flake-schemas";
       inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.nix-fmt.follows = "nix-fmt";
     };
-    wsl = {
+    nixos-platforms = {
       type = "github";
-      owner = "nix-community";
-      repo = "NixOS-WSL";
-      ref = "2411.6.0";
+      owner = "Denis101";
+      repo = "nixos-platforms";
+      ref = "0.0.1";
+      inputs.flake-schemas.follows = "flake-schemas";
+      inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nix-fmt.follows = "nix-fmt";
+      inputs.nix-utils.follows = "nix-utils";
+    };
+    builder-nixos = {
+      type = "github";
+      owner = "Denis101";
+      repo = "flake-builder-nixos";
+      ref = "0.0.1";
+      inputs.flake-schemas.follows = "flake-schemas";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nix-fmt.follows = "nix-fmt";
+      inputs.nix-utils.follows = "nix-utils";
     };
     darwin = {
       type = "github";
@@ -72,6 +87,8 @@
     nixpkgs,
     nix-fmt,
     nix-utils,
+    nixos-platforms,
+    builder-nixos,
     ...
   } @ inputs: rec {
     inherit (self) outputs;
@@ -79,21 +96,7 @@
     checks = nix-fmt.checks;
     formatter = nix-fmt.formatter;
 
-    nixosConfigurations = nix-utils.lib.flattenAttrset (
-      builtins.mapAttrs (
-        system: platforms:
-          builtins.mapAttrs (
-            name: module:
-              nix-utils.lib.buildNixos {
-                inherit system module;
-                specialArgs = {inherit inputs outputs;};
-              }
-          )
-          platforms
-      )
-      nix-utils.lib.linuxPlatforms
-    );
-
+    nixosConfigurations = builder-nixos.lib.builder nixos-platforms.lib.linuxPlatforms;
     darwinConfigurations = nix-utils.lib.flattenAttrset (
       builtins.mapAttrs (
         system: platforms:
@@ -106,7 +109,7 @@
           )
           platforms
       )
-      nix-utils.lib.darwinPlatforms
+      nixos-platforms.lib.darwinPlatforms
     );
 
     homeModules =
@@ -117,7 +120,7 @@
           )
           platforms
       )
-      nix-utils.lib.platforms;
+      nixos-platforms.lib.platforms;
 
     homeConfigurations =
       builtins.mapAttrs (
@@ -144,12 +147,9 @@
       system: let
         pkgs = import nixpkgs {inherit system;};
       in {
-        default = pkgs.mkShell {
+        default = pkgs.mkShellNoCC {
           buildInputs = with pkgs; [
-            git
-            nixfmt
-            shfmt
-            shellcheck
+            alejandra
           ];
         };
       }
