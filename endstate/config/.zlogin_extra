@@ -1,0 +1,5 @@
+# tmux detach-client -a
+# tska
+
+# tmux rename-session -t 0 home
+# tmux attach -t home

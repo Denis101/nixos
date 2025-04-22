@@ -1,0 +1,14 @@
+name: test
+root: ~/
+
+windows:
+  - main:
+      layout: abcc,316x83,0,0[316x64,0,0{74x64,0,0,4,241x64,75,0,7},316x18,0,65,6]
+      synchronize: after
+      panes:
+        - file_manager:
+          - nnn
+        - editor:
+          - hx
+        - terminal:
+          - zsh
